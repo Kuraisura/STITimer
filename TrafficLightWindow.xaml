@@ -1,0 +1,213 @@
+<Window x:Class="STITimer.TrafficLightWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Stand Up and Deliver"
+        WindowState="Maximized"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Opacity="0"
+        KeyDown="Window_KeyDown">
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                     From="0" To="1" Duration="0:0:0.5">
+                        <DoubleAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut"/>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+    <Window.Resources>
+        <Style x:Key="ConfigInputStyle" TargetType="TextBox">
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="#33FFFFFF"
+                                BorderThickness="0,0,0,2"
+                                BorderBrush="#88FFFFFF"
+                                CornerRadius="4"
+                                Padding="8,4">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TimerButtonStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#66FFFFFF"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="30,12"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <Border.Background>
+                                <SolidColorBrush x:Name="BdBg" Color="#44FFFFFF"/>
+                            </Border.Background>
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="BdBg"
+                                                            Storyboard.TargetProperty="Color"
+                                                            To="#66FFFFFF" Duration="0:0:0.15"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="BdBg"
+                                                            Storyboard.TargetProperty="Color"
+                                                            To="#44FFFFFF" Duration="0:0:0.15"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="BdBg"
+                                                            Storyboard.TargetProperty="Color"
+                                                            To="#88FFFFFF" Duration="0:0:0.05"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="BdBg"
+                                                            Storyboard.TargetProperty="Color"
+                                                            To="#66FFFFFF" Duration="0:0:0.15"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="Images/STI_Tagisan_Ng_Talino_Complete_Transparent.png" Stretch="UniformToFill"/>
+        </Grid.Background>
+
+        <!-- Event Branding (behind overlay) -->
+        <Image Source="Images/tagisan_ng_talino_font.png"
+               Height="80" Stretch="Uniform"
+               HorizontalAlignment="Right" VerticalAlignment="Top"
+               Margin="0,15,20,0" Opacity="0.4"
+               IsHitTestVisible="False"/>
+
+        <!-- Phase-colored overlay -->
+        <Grid x:Name="PhaseOverlay" Background="#CC1565C0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Event Logo -->
+            <Image x:Name="EventImage" Grid.Row="0"
+                   Height="120" Stretch="Uniform"
+                   VerticalAlignment="Center"
+                   Margin="0,30,0,0"/>
+
+            <!-- Phase Label -->
+            <TextBlock x:Name="PhaseLabel" Grid.Row="1"
+                       Text="PREPARATION"
+                       FontSize="50" FontWeight="Bold"
+                       Foreground="White"
+                       HorizontalAlignment="Center"
+                       Margin="0,10,0,0"/>
+
+            <!-- Timer Display -->
+            <Viewbox Grid.Row="2" Stretch="Uniform"
+                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Margin="40,10">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="MinutesDisplay" Text="00"
+                               FontSize="280" FontWeight="Bold" FontFamily="Consolas"
+                               Foreground="White"/>
+                    <TextBlock x:Name="SeparatorDisplay" Text=":"
+                               FontSize="280" FontWeight="Bold" FontFamily="Consolas"
+                               Foreground="White" Margin="5,0"/>
+                    <TextBlock x:Name="SecondsDisplay" Text="30"
+                               FontSize="280" FontWeight="Bold" FontFamily="Consolas"
+                               Foreground="White"/>
+                </StackPanel>
+            </Viewbox>
+
+            <!-- Config -->
+            <StackPanel Grid.Row="3" Orientation="Horizontal"
+                        HorizontalAlignment="Center" Margin="0,0,0,10">
+                <CheckBox x:Name="SkipPrepCheck" Content="Skip Prep"
+                          Foreground="White" FontSize="20" FontWeight="SemiBold"
+                          VerticalAlignment="Center" Margin="0,0,25,0"
+                          VerticalContentAlignment="Center"/>
+                <TextBlock x:Name="PrepLabel" Text="Prep:" Foreground="White" FontSize="22" FontWeight="SemiBold"
+                           VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBox x:Name="PrepSecondsBox" Text="30" Width="60"
+                         Style="{StaticResource ConfigInputStyle}"/>
+                <TextBlock x:Name="PrepUnitLabel" Text="s" Foreground="White" FontSize="22"
+                           VerticalAlignment="Center" Margin="4,0,30,0"/>
+                <TextBlock Text="Speech:" Foreground="White" FontSize="22" FontWeight="SemiBold"
+                           VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBox x:Name="SpeechMinutesBox" Text="2" Width="50"
+                         Style="{StaticResource ConfigInputStyle}"/>
+                <TextBlock Text="m" Foreground="White" FontSize="22"
+                           VerticalAlignment="Center" Margin="4,0,8,0"/>
+                <TextBox x:Name="SpeechSecondsBox" Text="00" Width="50"
+                         Style="{StaticResource ConfigInputStyle}"/>
+                <TextBlock Text="s" Foreground="White" FontSize="22"
+                           VerticalAlignment="Center" Margin="4,0,0,0"/>
+            </StackPanel>
+
+            <!-- Controls -->
+            <StackPanel Grid.Row="4" HorizontalAlignment="Center" Margin="0,0,0,20">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,5">
+                    <Button x:Name="StartPauseButton" Content="▶  Start"
+                            Style="{StaticResource TimerButtonStyle}"
+                            Click="StartPause_Click"/>
+                    <Button x:Name="ResetButton" Content="⏹  Reset"
+                            Style="{StaticResource TimerButtonStyle}"
+                            Click="Reset_Click"/>
+                </StackPanel>
+                <TextBlock x:Name="HintText" Text="SPACE = Start / Pause    •    R = Reset    •    ESC = Exit"
+                           Foreground="#88FFFFFF" FontSize="18"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+
+            </Grid>
+        </Window>
